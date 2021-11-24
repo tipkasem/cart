@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <title>Cute T-shirt</title>
+     
+    <style>
+        .access-point1 {border: 1px solid black;
+    height: 100px; text-align: center; 
+    background-color: rgb(235, 103, 176);}
+        .access-point2 {border: 1px solid black; 
+    height: 400px; text-align: center; 
+    background-color: skyblue;}
+
+    </style>
+<body>
+    <div name="site-header" ><!--class="access-point1"--> 
+        <!--Header--> 
+        <nav class="navbar navbar-light bg-light justify-content-between">
+            <a class="navbar-brand">Log in</a>
+            <h1> Cute T-shirt </h1>
+            <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </nav>
+    </div>
+
+    <div name="site-nav"> <!-- class="access-point2" -->
+
+
+<div class="app_container">
+        <div id="app">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="container" style="margin-top : 30px;" v-if="product_page">
+                            <button class="nav-item" v-on:click="ShowMyCart">
+                                <a class="nav-link" href="#">My Cart ({{countitem}})</a>
+                            </button> 
+                    </div>
+                </div>
+            </nav>
+            <div class="container" style="margin-top : 30px;" v-if="product_page">
+                In Stock Products ::
+                <hr/>
+                <div class="home container">
+                    <div class="row">
+                        <div class="col-md-12 pt-5">
+                            <div class="row equal row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
+                                <Product v-on:add-item="addItem" v-for="product in products" :product="product" :key="product.id" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" style="margin-top : 30px;" v-if="cart_page">
+                My Cart ::
+                <hr/>
+                <div class="home container">
+                    <div class="row">
+                        <div class="col-md-12 pt-5">
+                            <CartItem v-for="item in cart" :item="item" :key="item.id" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+
+    <template id="product-template">
+        <div class="col mb-4 d-flex">
+            <div class="card">
+                <img :src="product.url" class="card-img-top" alt="...">
+                <div class="card-body">
+                <h5 class="card-title">{{product.name}}</h5>
+                <p class="card-text">
+                    {{product.price}}THB
+                    <br/>
+                    <small>
+                    {{product.shortdesc}}
+                    </small>
+                </p>
+                <button @click="addToCart()" class="btn btn-primary btn-block">Add</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="cartitem-template">
+        <div>{{item.name}} - {{item.count}} --->{{item.price*item.count}}THB </div>
+        <a class="btn btn-primary" href="#">Remove</a>
+    </template>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- <script src="https://unpkg.com/vuex@4.0.0/dist/vuex.global.js"></script> -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        let app = Vue.createApp({
+            data: function() {
+                return {
+                    
+                    product_page: true,
+                    cart_page: false,
+
+                    products: [{
+                        id: 1,
+                        name: "MIDNIGHT LIBRARY",
+                        price: 200,
+                        shortdesc: "Nora's life has been going from bad to worse. Then at the stroke of midnight on her last day on earth she finds herself transported to a library.",
+                        url: "image/1.jpg"
+                    }, {
+                        id: 2,
+                        name: "Diary of a Wimpy Kid",
+                        price: 205,
+                        shortdesc: "Haven't had a good laugh lately? Laugh until you cry at all of Greg's hopeless shenanigans. Diary of a Wimpy Kid has got millions of kids reading and laughing at  the famous Greg Heffley.  ",
+                        url: "image/2.jpg"
+                    }, {
+                        id: 3,
+                        name: "Harry Potter",
+                        price: 335,
+                        shortdesc: "These new editions of the classic and internationally bestselling, multi-award-winning series feature instantly pick-up-able new jackets by Jonny Duddle, with huge child appeal, to bring Harry Potter to the next generation of readers.",
+                        url: "image/black.jpg"
+                    }, {
+                        id: 4,
+                        name: "Brain Quest WorkBook",
+                        price: 450,
+                        shortdesc: "Jam-packed with hundreds of curriculum-based activities, exercises and games in every subject, Brain Quest Grade 1 Workbook reinforces what kids are learning in the classroom.",
+                        url: "image/white.jpg"
+                    }, {
+                        id: 5,
+                        name: "CHRISTMAS PIG",
+                        price: 260,
+                        shortdesc: "One boy and his toy are about to change everything... Jack loves his childhood toy, Dur Pig. DP has always been there for him, through good and bad. ",
+                        url: "images/b4.jpg"
+                    }, {
+                        id: 5,
+                        name: "100 WAYS TO IMPROVE YOUR WRITING",
+                        price: 450,
+                        shortdesc: "This is the one guide that anyone who writes&;whether student, businessperson, or professional writer ",
+                        url: "images/b3.jpg"
+                    }, {
+                        id: 6,
+                        name: "Richer,Wiser,happier",
+                        price: 450,
+                        shortdesc: "From an award-winning financial journalist who has written for The New Yorker, Time, and Fortune, a fresh and unexpectedly profound book that draws on interviews with more than forty of the world's super-investors to demonstrate.",
+                        url: "images/new2.jpg"
+                    }, {
+                        id: 7,
+                        name: "Health&Beauty",
+                        price: 1020,
+                        shortdesc: "explores how compelling graphic identities and interiors play a crucial role in impacting the perceptions and promises offered by upcoming and established healthcare and beauty brands today. ",
+                        url: "images/come1.jpg"
+                    }],
+                    cart: []
+                }
+            },
+
+            mounted: function() {
+
+            },
+
+            methods: {
+                addItem: function(id) {
+                    console.log(this.products)
+                    console.log(id)
+                    
+                    //Check if this product already in the cart
+                    item = this.cart.find(product => product.id == id)
+
+                    if (item) { // if this product already in the cart
+                        item.count += 1
+                    } else {
+                        item = this.products.find(product => product.id == id)
+                        this.cart.push({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            count: 1
+                        })
+                    }
+                    console.log(this.cart)
+                },
+
+                ShowMyCart: function() {
+                    this.cart_page = true
+                    this.product_page = false
+                },
+
+                ShowHomePage: function() {
+                    this.product_page = true
+                    this.cart_page = false
+                }
+            },
+
+            computed: {
+                countitem: function() {
+                    var total = 0
+                    for (i in this.cart) {
+                        total += this.cart[i].count
+                    }
+                    return total
+                }
+            }
+
+        })
+
+        app.component('Product', {
+            data: function() {
+                return {}
+            },
+            props: ['product'],
+            template: "#product-template",
+
+            methods: {
+                addToCart: function() {
+                    this.$emit("add-item", this.product.id)
+                }
+
+            },
+        });
+
+        app.component('Cartitem', {
+            props: ['item'],
+            template: '#cartitem-template',
+        });
+
+        app.mount("#app")
+    </script>
+
+
+</body>
+
+</html>
